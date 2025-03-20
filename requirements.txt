@@ -74,3 +74,4 @@ flask
 flask_cors
 transformers
 torch
+tokenizers==0.13.3
