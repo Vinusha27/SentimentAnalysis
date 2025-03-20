@@ -71,6 +71,6 @@ streamlit
 requests
 flask_cors
 transformers==4.20.1
-tokenizers==0.12.1
---prefer-binary
+tokenizers==0.12.1 --prefer-binary
+
 
