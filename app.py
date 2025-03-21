@@ -1,31 +1,38 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, render_template, request, jsonify
 from transformers import pipeline
 
 app = Flask(__name__)
-CORS(app)
+sentiment_model = pipeline('sentiment-analysis')
 
-sentiment_analyzer = pipeline("sentiment-analysis")
 
 @app.route('/')
-def home():
-    return "Backend is working!"
+def index():
+    return '''
+    <html>
+    <head>
+        <title>Sentiment Analysis</title>
+    </head>
+    <body>
+        <h1>Enter text for sentiment analysis:</h1>
+        <form action="/predict" method="post">
+            <textarea name="text" rows="5" cols="40"></textarea><br>
+            <input type="submit" value="Analyze">
+        </form>
+    </body>
+    </html>
+    '''
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    try:
-        data = request.json  # Get the JSON data sent by the frontend
-        text = data.get('text')  # Extract the text input
 
-        if not text:
-            return jsonify({"error": "No text provided"}), 400  # Error if text is missing
+@app.route('/predict', methods=['POST'])
+def predict():
+    text = request.form['text']
+    result = sentiment_model(text)[0]
+    response = {
+        'label': result['label'],
+        'score': round(result['score'], 4)
+    }
+    return jsonify(response)
 
-        # Perform sentiment analysis
-        result = sentiment_analyzer(text)
-        return jsonify({"result": result})  # Send result as JSON response
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500  # Error handling
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)

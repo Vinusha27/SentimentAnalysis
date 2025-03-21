@@ -13,10 +13,8 @@ if st.button("Analyze"):
     if user_input:
         try:
             # Send the input text to the backend for analysis
-            response = requests.post(
-                "http://127.0.0.1:5000/analyze",
-                json={"text": user_input}
-            )
+            response = requests.post("http://127.0.0.1:5000/analyze", json={"text": user_input})
+
 
             # Check if the request was successful
             if response.status_code == 200:
